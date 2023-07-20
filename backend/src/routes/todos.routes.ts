@@ -1,25 +1,19 @@
-import { Router } from 'express';
+import express from 'express'
+import { Router } from 'express'
+import { createTodo, getTodo, getTodos } from '../controllers/todoController'
 
-const router = Router();
+const router = Router()
 
-router.get('/', (req, res) => {
-  res.json({ message: 'GET all posts' });
-});
+router.get('/', getTodos)
+router.get('/:id', getTodo)
+router.post('/', createTodo)
 
-router.get('/:id', (req, res) => {
-  res.json({ message: 'GET a single post' });
-});
+router.delete('/:id', (req: express.Request, res: express.Response) => {
+  res.json({ message: 'DELETE a post' })
+})
 
-router.post('/', (req, res) => {
-  res.json({ message: 'POST a post' });
-});
+router.patch('/:id', (req: express.Request, res: express.Response) => {
+  res.json({ message: 'PATCH a post' })
+})
 
-router.delete('/:id', (req, res) => {
-  res.json({ message: 'DELETE a post' });
-});
-
-router.patch('/:id', (req, res) => {
-  res.json({ message: 'PATCH a post' });
-});
-
-export default router;
+export default router
