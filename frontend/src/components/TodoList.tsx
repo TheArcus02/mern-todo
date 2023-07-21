@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { TodoInterface } from '../interfaces/interfaces';
 import Loading from './Loading';
+import TodoCard from './TodoCard';
 
 const TodoList = () => {
   const [todos, setTodos] = useState<TodoInterface[] | undefined>(
@@ -19,9 +20,9 @@ const TodoList = () => {
   }, []);
 
   return todos ? (
-    <div>
+    <div className='flex flex-col p-2 gap-3'>
       {todos.map((todo: TodoInterface) => (
-        <div key={todo.title}>{todo.title}</div>
+        <TodoCard todo={todo} key={todo._id} />
       ))}
     </div>
   ) : (
