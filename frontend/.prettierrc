@@ -4,7 +4,7 @@
   "singleQuote": true,
   "jsxSingleQuote": true,
   "endOfLine": "auto",
-  "parser": "flow",
+  "parser": "typescript",
   "trailingComma": "all",
   "printWidth": 70
 }
