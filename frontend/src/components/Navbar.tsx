@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Navbar = () => {
   return (
     <div className='navbar bg-neutral'>
@@ -24,7 +26,10 @@ const Navbar = () => {
             className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52'
           >
             <li>
-              <a>Todos</a>
+              <Link to='/'>Todos</Link>
+            </li>
+            <li>
+              <Link to='/add'>Add</Link>
             </li>
           </ul>
         </div>
@@ -33,7 +38,10 @@ const Navbar = () => {
       <div className='navbar-center hidden lg:flex'>
         <ul className='menu menu-horizontal px-1'>
           <li>
-            <a>Todos</a>
+            <Link to='/'>Todos</Link>
+          </li>
+          <li>
+            <Link to='/add'>Add</Link>
           </li>
         </ul>
       </div>
