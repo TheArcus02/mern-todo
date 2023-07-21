@@ -6,31 +6,35 @@ import mongoose from 'mongoose'
 const getTodos = async (req: express.Request, res: express.Response) => {
   try {
     const todos = await Todo.find().sort({ createdAt: -1 })
-    res.status(200).json(todos)
+    return res.status(200).json(todos)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 }
 
 const getTodo = async (req: express.Request, res: express.Response) => {
-  const { id } = req.params
+  try {
+    const { id } = req.params
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404).json({ message: 'Todo not found' })
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
+
+    const todo = await Todo.findById(id)
+
+    if (!todo) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
+
+    return res.status(200).json(todo)
+  } catch (error) {
+    return res.status(400).json({ error: error.message })
   }
-
-  const todo = await Todo.findById(id)
-
-  if (!todo) {
-    res.status(404).json({ message: 'Todo not found' })
-  }
-
-  res.status(200).json(todo)
 }
 
 const createTodo = async (req: express.Request, res: express.Response) => {
-  const { title, description, completed } = req.body as TodoInterface
   try {
+    const { title, description, completed } = req.body as TodoInterface
     const todo = await Todo.create({
       title,
       description,
@@ -42,8 +46,45 @@ const createTodo = async (req: express.Request, res: express.Response) => {
   }
 }
 
-const deleteTodo = async (req: express.Request, res: express.Response) => {}
+const deleteTodo = async (req: express.Request, res: express.Response) => {
+  try {
+    const { id } = req.params
 
-const updateTodo = async (req: express.Request, res: express.Response) => {}
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
 
-export { getTodos, getTodo, createTodo }
+    const todo = await Todo.findByIdAndDelete(id)
+
+    if (!todo) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
+    return res.status(200).json(todo)
+  } catch (error) {
+    return res.status(400).json({ error: error.message })
+  }
+}
+
+const updateTodo = async (req: express.Request, res: express.Response) => {
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
+
+    const todo = await Todo.findByIdAndUpdate(id, {
+      ...(req.body as TodoInterface),
+    })
+
+    if (!todo) {
+      return res.status(404).json({ message: 'Todo not found' })
+    }
+
+    return res.status(200).json(todo)
+  } catch (error) {
+    return res.status(400).json({ error: error.message })
+  }
+}
+
+export { getTodos, getTodo, createTodo, deleteTodo, updateTodo }

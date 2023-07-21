@@ -1,19 +1,18 @@
-import express from 'express'
 import { Router } from 'express'
-import { createTodo, getTodo, getTodos } from '../controllers/todoController'
+import {
+  createTodo,
+  deleteTodo,
+  getTodo,
+  getTodos,
+  updateTodo,
+} from '../controllers/todoController'
 
 const router = Router()
 
 router.get('/', getTodos)
 router.get('/:id', getTodo)
 router.post('/', createTodo)
-
-router.delete('/:id', (req: express.Request, res: express.Response) => {
-  res.json({ message: 'DELETE a post' })
-})
-
-router.patch('/:id', (req: express.Request, res: express.Response) => {
-  res.json({ message: 'PATCH a post' })
-})
+router.delete('/:id', deleteTodo)
+router.patch('/:id', updateTodo)
 
 export default router
