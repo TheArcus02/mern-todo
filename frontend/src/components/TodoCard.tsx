@@ -3,6 +3,7 @@ import { TodoInterface } from '../interfaces/interfaces'
 import { PiTrash } from 'react-icons/pi'
 import { removeTodo, updateTodo } from '../redux/todosSlice'
 import { toast } from 'react-toastify'
+import { formatDistanceToNow } from 'date-fns'
 interface TodoCardProps {
   todo: TodoInterface
 }
@@ -63,14 +64,19 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
         </div>
         <p>{description}</p>
         <div className='card-actions justify-between items-center'>
+          <div className='flex items-center gap-1.5'>
+            {formatDistanceToNow(new Date(todo.createdAt), {
+              addSuffix: true,
+            })}
+          </div>
           <label className='cursor-pointer label px-0'>
+            <span className='label-text'>Completed</span>
             <input
               type='checkbox'
-              className='mr-2 checkbox checkbox-success'
+              className='ml-2 checkbox checkbox-success'
               checked={completed}
               onChange={handleCompleted}
             />
-            <span className='label-text'>Completed</span>
           </label>
         </div>
       </div>

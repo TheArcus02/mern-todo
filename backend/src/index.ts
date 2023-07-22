@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import todosRoutes from './routes/todos.routes'
+import userRoutes from './routes/user.routes'
 import mongoose from 'mongoose'
 import cors from 'cors'
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/todos', todosRoutes)
+app.use('/api/user', userRoutes)
 
 // Database
 mongoose
