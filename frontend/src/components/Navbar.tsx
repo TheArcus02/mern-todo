@@ -28,9 +28,6 @@ const Navbar = () => {
             <li>
               <Link to='/'>Todos</Link>
             </li>
-            <li>
-              <Link to='/add'>Add</Link>
-            </li>
           </ul>
         </div>
         <a className='btn btn-ghost normal-case text-xl'>MERN TODO</a>
@@ -39,9 +36,6 @@ const Navbar = () => {
         <ul className='menu menu-horizontal px-1'>
           <li>
             <Link to='/'>Todos</Link>
-          </li>
-          <li>
-            <Link to='/add'>Add</Link>
           </li>
         </ul>
       </div>

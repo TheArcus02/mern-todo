@@ -11,7 +11,6 @@ export const todosSlice = createSlice({
   initialState: { todos: [] as TodoInterface[] },
   reducers: {
     setTodos: (state, action: PayloadAction<TodoInterface[]>) => {
-      console.log(action.payload);
       state.todos = action.payload;
     },
     addTodo: (state, action: PayloadAction<TodoInterface>) => {

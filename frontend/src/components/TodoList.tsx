@@ -1,9 +1,9 @@
-import { TodoInterface } from '../interfaces/interfaces';
+import { TodoInterface } from '../interfaces/interfaces'
 
-import TodoCard from './TodoCard';
+import TodoCard from './TodoCard'
 
 interface TodoListProps {
-  todos: TodoInterface[];
+  todos: TodoInterface[]
 }
 
 const TodoList: React.FC<TodoListProps> = ({ todos }) => {
@@ -13,7 +13,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
         <TodoCard todo={todo} key={todo._id} />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default TodoList;
+export default TodoList

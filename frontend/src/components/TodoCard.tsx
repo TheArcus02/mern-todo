@@ -1,15 +1,15 @@
-import { useDispatch } from 'react-redux';
-import { TodoInterface } from '../interfaces/interfaces';
-import { PiTrash } from 'react-icons/pi';
-import { updateTodo } from '../redux/todosSlice';
-import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux'
+import { TodoInterface } from '../interfaces/interfaces'
+import { PiTrash } from 'react-icons/pi'
+import { removeTodo, updateTodo } from '../redux/todosSlice'
+import { toast } from 'react-toastify'
 interface TodoCardProps {
-  todo: TodoInterface;
+  todo: TodoInterface
 }
 
 const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
-  const { title, description, completed } = todo;
-  const dispatch = useDispatch();
+  const { title, description, completed } = todo
+  const dispatch = useDispatch()
 
   const handleCompleted = async () => {
     const response = await fetch(
@@ -21,23 +21,43 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
         },
         body: JSON.stringify({ completed: !completed }),
       },
-    );
+    )
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (response.ok) {
-      dispatch(updateTodo({ ...todo, completed: !completed }));
+      dispatch(updateTodo({ ...todo, completed: !completed }))
     } else {
-      toast.error(data.message);
+      toast.error(data.error)
     }
-  };
+  }
+
+  const handleDelete = async () => {
+    const response = await fetch(
+      `http://localhost:8080/api/todos/${todo._id}`,
+      {
+        method: 'DELETE',
+      },
+    )
+
+    const data = await response.json()
+    if (response.ok) {
+      toast.success('❌ Todo deleted successfully')
+      dispatch(removeTodo(todo))
+    } else {
+      toast.error(data.error)
+    }
+  }
 
   return (
     <div className='card w-96 bg-neutral shadow-xl'>
       <div className='card-body'>
         <div className='flex justify-between'>
           <h2 className='card-title'>{title}</h2>
-          <button className='btn btn-sm btn-circle btn-outline btn-error'>
+          <button
+            className='btn btn-sm btn-circle btn-outline btn-error'
+            onClick={handleDelete}
+          >
             <PiTrash />
           </button>
         </div>
@@ -55,7 +75,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TodoCard;
+export default TodoCard
