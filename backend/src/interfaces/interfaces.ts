@@ -3,3 +3,8 @@ export interface TodoInterface {
   description: string
   completed?: boolean
 }
+
+export interface UserInterface {
+  email: string
+  password: string
+}

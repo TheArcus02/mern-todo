@@ -1,6 +1,7 @@
-import mongoose from 'mongoose'
+import { Schema, model } from 'mongoose'
+import { TodoInterface } from '../interfaces/interfaces'
 
-const todoSchema = new mongoose.Schema(
+const todoSchema = new Schema<TodoInterface>(
   {
     title: {
       type: String,
@@ -15,5 +16,5 @@ const todoSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-const Todo = mongoose.model('Todo', todoSchema)
+const Todo = model('Todo', todoSchema)
 export default Todo
