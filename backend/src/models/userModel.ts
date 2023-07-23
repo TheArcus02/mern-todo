@@ -1,10 +1,11 @@
 import { Model, Schema, model } from 'mongoose'
 import bcrypt from 'bcrypt'
-import { UserInterface } from '../interfaces/interfaces'
+import { DbUserInterface, UserInterface } from '../interfaces/interfaces'
 import validator from 'validator'
 
 interface UserModelInterface extends Model<UserInterface> {
-  signup(email: string, password: string): Promise<UserInterface>
+  signup(email: string, password: string): Promise<DbUserInterface>
+  login(email: string, password: string): Promise<DbUserInterface>
 }
 
 const userSchema = new Schema<UserInterface, UserModelInterface>({
@@ -19,6 +20,7 @@ const userSchema = new Schema<UserInterface, UserModelInterface>({
   },
 })
 
+// Statics
 userSchema.static('signup', async function (email: string, password: string) {
   if (!email || !password) {
     throw new Error('Email and password are required')
@@ -43,6 +45,24 @@ userSchema.static('signup', async function (email: string, password: string) {
 
   const user = await this.create({ email, password: hash })
 
+  return user
+})
+
+userSchema.static('login', async function (email: string, password: string) {
+  if (!email || !password) {
+    throw new Error('Email and password are required')
+  }
+  const user: DbUserInterface = await this.findOne({ email })
+
+  if (!user) {
+    throw new Error('Invalid credentials')
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) {
+    throw new Error('Invalid credentials')
+  }
   return user
 })
 
