@@ -1,9 +1,5 @@
 const Loading = () => {
-  return (
-    <div className='min-h-screen min-w-full flex items-center justify-center'>
-      <span className='loading loading-dots loading-lg' />
-    </div>
-  );
-};
+  return <span className='loading loading-dots loading-lg' />
+}
 
-export default Loading;
+export default Loading

@@ -8,7 +8,7 @@ export interface TodoInterface {
   __v: number
 }
 
-export interface userInterface {
+export interface UserInterface {
   email: string
   token: string
 }

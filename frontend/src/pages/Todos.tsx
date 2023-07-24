@@ -1,31 +1,31 @@
-import { useEffect, useState } from 'react';
-import TodoList from '../components/TodoList';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { setTodos } from '../redux/todosSlice';
-import Loading from '../components/Loading';
-import AddForm from '../components/AddForm';
+import { useEffect, useState } from 'react'
+import TodoList from '../components/TodoList'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../redux/store'
+import { setTodos } from '../redux/todosSlice'
+import Loading from '../components/Loading'
+import AddForm from '../components/AddForm'
 
 const Todos = () => {
-  const todos = useSelector((state: RootState) => state.todos.todos);
-  const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
+  const todos = useSelector((state: RootState) => state.todos.todos)
+  const dispatch = useDispatch()
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const response = await fetch('http://localhost:8080/api/todos');
+      const response = await fetch('http://localhost:8080/api/todos')
       if (response.ok) {
-        const data = await response.json();
-        dispatch(setTodos(data));
+        const data = await response.json()
+        dispatch(setTodos(data))
       }
-    };
+    }
 
-    todos.length === 0 && fetchTodos();
-  }, [dispatch, todos]);
+    todos.length === 0 && fetchTodos()
+  }, [dispatch, todos])
 
   const handleAddTodo = () => {
-    setIsOpen((prev) => !prev);
-  };
+    setIsOpen((prev) => !prev)
+  }
 
   return todos.length > 0 ? (
     <div className='flex flex-col justify-center items-center w-full h-full p-10 '>
@@ -46,8 +46,10 @@ const Todos = () => {
       </div>
     </div>
   ) : (
-    <Loading />
-  );
-};
+    <div className='min-h-screen min-w-full flex items-center justify-center'>
+      <Loading />
+    </div>
+  )
+}
 
-export default Todos;
+export default Todos

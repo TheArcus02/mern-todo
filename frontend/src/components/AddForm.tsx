@@ -1,81 +1,100 @@
-import { useState } from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TodoInterface } from '../interfaces/interfaces'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import { addTodo } from '../redux/todosSlice'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
+import { zodResolver } from '@hookform/resolvers/zod'
+import axios, { AxiosError } from 'axios'
+import { useEffect } from 'react'
+import Loading from './Loading'
 
 interface AddFormProps {
   handleClose: () => void
 }
 
+const TodoValidator = z.object({
+  title: z
+    .string()
+    .min(1, { message: 'Title is required' })
+    .max(20, { message: 'Title must be less than 20 characters' }),
+  description: z
+    .string()
+    .min(1, { message: 'Description is required' }),
+})
+
+type TodoValidatorType = z.infer<typeof TodoValidator>
+
 const AddForm: React.FC<AddFormProps> = ({ handleClose }) => {
-  const [todoData, setTodoData] = useState<Partial<TodoInterface>>({
-    title: '',
-    description: '',
-    completed: false,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TodoValidatorType>({
+    resolver: zodResolver(TodoValidator),
   })
 
   const dispatch = useDispatch()
 
-  const handleOnChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setTodoData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
-
-  const handleAddTodo = async () => {
-    if (!todoData.title || !todoData.description) {
-      toast.error('📝 Please fill all the fields')
-      return
-    }
-
-    const response = await fetch('http://localhost:8080/api/todos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(todoData),
-    })
-
-    const data = await response.json()
-
-    if (response.ok) {
+  const { mutate: addTodoHandler, isLoading } = useMutation({
+    mutationFn: async ({ title, description }: TodoValidatorType) => {
+      const { data } = await axios.post(
+        'http://localhost:8080/api/todos',
+        { title, description },
+      )
+      return data as TodoInterface
+    },
+    onSuccess: (data) => {
       dispatch(addTodo({ ...data }))
-      toast.success('✔ Todo added successfully')
-    } else {
-      console.log(data)
-      toast.error(data.error)
+      toast.success('Todo added successfully 🎉')
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.message)
+        console.log(error)
+      }
+    },
+  })
+
+  useEffect(() => {
+    if (errors) {
+      toast.error(
+        errors.title?.message || errors.description?.message,
+      )
     }
+  }, [errors])
 
-    handleClose()
-  }
-
-  return (
-    <div className='flex flex-col gap-3 w-full max-w-md p-2 rounded-lg'>
+  return !isLoading ? (
+    <form
+      onSubmit={handleSubmit((data) => addTodoHandler(data))}
+      className='flex flex-col gap-3 w-full max-w-md p-2 rounded-lg'
+    >
       <input
         type='text'
         className='input input-bordered'
-        name='title'
         placeholder='Title'
-        onChange={(e) => handleOnChange(e)}
+        autoFocus
+        {...register('title')}
       />
       <textarea
         className='textarea textarea-bordered'
-        name='description'
         placeholder='Description'
-        onChange={(e) => handleOnChange(e)}
+        {...register('description')}
       ></textarea>
       <div className='flex justify-between'>
         <button className='btn btn-warning' onClick={handleClose}>
           Cancel
         </button>
-        <button className='btn btn-primary' onClick={handleAddTodo}>
+        <button className='btn btn-primary' type='submit'>
           Add
         </button>
       </div>
+    </form>
+  ) : (
+    <div className='min-w-full flex items-center justify-center'>
+      <Loading />
     </div>
   )
 }
