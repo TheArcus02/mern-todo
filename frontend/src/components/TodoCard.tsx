@@ -12,6 +12,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
   const { title, description, completed } = todo
   const dispatch = useDispatch()
 
+  // TODO: Refactor this to use react-query
   const handleCompleted = async () => {
     const response = await fetch(
       `http://localhost:8080/api/todos/${todo._id}`,
