@@ -28,9 +28,15 @@ userSchema.static('signup', async function (email: string, password: string) {
   if (!validator.isEmail(email)) {
     throw new Error('Email is invalid')
   }
-  if (!validator.isStrongPassword(password)) {
+  if (
+    !validator.isStrongPassword(password, {
+      minLength: 6,
+      minUppercase: 1,
+      minNumbers: 1,
+    })
+  ) {
     throw new Error(
-      'Password is invalid. It must contain at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol',
+      'Password is invalid. It must contain at least 6 characters, 1 uppercase letter and 1 number',
     )
   }
 
