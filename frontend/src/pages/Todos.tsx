@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 
 const Todos = () => {
   const todos = useSelector((state: RootState) => state.todos.todos)
-  const { token } = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector((state: RootState) => state.auth.user)
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -23,7 +23,7 @@ const Todos = () => {
         'http://localhost:8080/api/todos',
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         },
       )

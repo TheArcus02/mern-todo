@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TodoInterface } from '../interfaces/interfaces'
 import { toast } from 'react-toastify'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addTodo } from '../redux/todosSlice'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios, { AxiosError } from 'axios'
 import { useEffect } from 'react'
 import Loading from './Loading'
+import { RootState } from '../redux/store'
 
 interface AddFormProps {
   handleClose: () => void
@@ -37,12 +38,18 @@ const AddForm: React.FC<AddFormProps> = ({ handleClose }) => {
   })
 
   const dispatch = useDispatch()
+  const user = useSelector((state: RootState) => state.auth.user)
 
   const { mutate: addTodoHandler, isLoading } = useMutation({
     mutationFn: async ({ title, description }: TodoValidatorType) => {
       const { data } = await axios.post(
         'http://localhost:8080/api/todos',
         { title, description },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        },
       )
       return data as TodoInterface
     },

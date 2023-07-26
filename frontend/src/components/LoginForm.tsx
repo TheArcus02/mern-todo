@@ -42,7 +42,7 @@ const LoginForm = () => {
       localStorage.setItem('user', JSON.stringify(data))
       dispatch(login(data))
       toast.success('Login successful 🎉')
-      navigate('/')
+      navigate('/todos')
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

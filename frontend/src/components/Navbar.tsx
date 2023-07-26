@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom'
 import { logout } from '../redux/authSlice'
 import { RootState } from '../redux/store'
 import { toast } from 'react-toastify'
+import { setTodos } from '../redux/todosSlice'
 
 const Navbar = () => {
   const dispatch = useDispatch()
 
-  const { token } = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector((state: RootState) => state.auth.user)
 
   const handleLogout = () => {
     localStorage.removeItem('user')
     dispatch(logout())
+    dispatch(setTodos([]))
     toast.success('Logout successful 🔒')
   }
 
@@ -40,23 +42,26 @@ const Navbar = () => {
             className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52'
           >
             <li>
-              <Link to='/'>Todos</Link>
+              <Link to='/todos'>Todos</Link>
             </li>
           </ul>
         </div>
-        <Link to='/' className='btn btn-ghost normal-case text-xl'>
+        <Link
+          to='/todos'
+          className='btn btn-ghost normal-case text-xl'
+        >
           MERN TODO
         </Link>
       </div>
       <div className='navbar-center hidden lg:flex'>
         <ul className='menu menu-horizontal px-1'>
           <li>
-            <Link to='/'>Todos</Link>
+            <Link to='/todos'>Todos</Link>
           </li>
         </ul>
       </div>
       <div className='navbar-end'>
-        {token ? (
+        {user?.token ? (
           <button className='btn btn-ghost' onClick={handleLogout}>
             Logout
           </button>

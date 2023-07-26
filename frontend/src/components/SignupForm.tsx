@@ -42,7 +42,7 @@ const SignupForm = () => {
       localStorage.setItem('token', data.token)
       dispatch(login(data))
       toast.success('Signup successful 🎉')
-      navigate('/')
+      navigate('/todos')
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

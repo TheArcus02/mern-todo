@@ -7,14 +7,13 @@ import { formatDistanceToNow } from 'date-fns'
 import { useMutation } from 'react-query'
 import axios, { AxiosError } from 'axios'
 import { RootState } from '../redux/store'
-import Loading from './Loading'
 interface TodoCardProps {
   todo: TodoInterface
 }
 
 const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
   const { title, description, completed } = todo
-  const { token } = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector((state: RootState) => state.auth.user)
   const dispatch = useDispatch()
 
   const { mutate: handleCompleted, isLoading: updateLoading } =
@@ -28,7 +27,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${user?.token}`,
             },
           },
         )
@@ -58,7 +57,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
           `http://localhost:8080/api/todos/${todo._id}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${user?.token}`,
             },
           },
         )
@@ -76,7 +75,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
       },
     })
 
-  return !(updateLoading || deleteLoading) ? (
+  return (
     <div className='card w-96 bg-neutral shadow-xl'>
       <div className='card-body'>
         <div className='flex justify-between'>
@@ -84,6 +83,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
           <button
             className='btn btn-sm btn-circle btn-outline btn-error'
             onClick={() => handleDelete()}
+            disabled={updateLoading || deleteLoading}
           >
             <PiTrash />
           </button>
@@ -102,14 +102,11 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
               className='ml-2 checkbox checkbox-success'
               checked={completed}
               onChange={() => handleCompleted()}
+              disabled={updateLoading || deleteLoading}
             />
           </label>
         </div>
       </div>
-    </div>
-  ) : (
-    <div>
-      <Loading />
     </div>
   )
 }
