@@ -1,64 +1,89 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { TodoInterface } from '../interfaces/interfaces'
 import { PiTrash } from 'react-icons/pi'
 import { removeTodo, updateTodo } from '../redux/todosSlice'
 import { toast } from 'react-toastify'
 import { formatDistanceToNow } from 'date-fns'
+import { useMutation } from 'react-query'
+import axios, { AxiosError } from 'axios'
+import { RootState } from '../redux/store'
+import Loading from './Loading'
 interface TodoCardProps {
   todo: TodoInterface
 }
 
 const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
   const { title, description, completed } = todo
+  const { token } = useSelector((state: RootState) => state.auth.user)
   const dispatch = useDispatch()
 
-  // TODO: Refactor this to use react-query
-  const handleCompleted = async () => {
-    const response = await fetch(
-      `http://localhost:8080/api/todos/${todo._id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ completed: !completed }),
+  const { mutate: handleCompleted, isLoading: updateLoading } =
+    useMutation({
+      mutationKey: 'updateTodo',
+      mutationFn: async () => {
+        const { data } = await axios.patch(
+          `http://localhost:8080/api/todos/${todo._id}`,
+          {
+            completed: !completed,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        return data as TodoInterface
       },
-    )
-
-    const data = await response.json()
-
-    if (response.ok) {
-      dispatch(updateTodo({ ...todo, completed: !completed }))
-    } else {
-      toast.error(data.error)
-    }
-  }
-
-  const handleDelete = async () => {
-    const response = await fetch(
-      `http://localhost:8080/api/todos/${todo._id}`,
-      {
-        method: 'DELETE',
+      onSuccess: () => {
+        dispatch(
+          updateTodo({
+            ...todo,
+            completed: !completed,
+          }),
+        )
       },
-    )
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message || error.message)
+          console.log(error)
+        }
+      },
+    })
 
-    const data = await response.json()
-    if (response.ok) {
-      toast.success('❌ Todo deleted successfully')
-      dispatch(removeTodo(todo))
-    } else {
-      toast.error(data.error)
-    }
-  }
+  const { mutate: handleDelete, isLoading: deleteLoading } =
+    useMutation({
+      mutationKey: 'deleteTodo',
+      mutationFn: async () => {
+        const { data } = await axios.delete(
+          `http://localhost:8080/api/todos/${todo._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        return data as TodoInterface
+      },
+      onSuccess: () => {
+        toast.success('Todo deleted successfully ❌')
+        dispatch(removeTodo(todo))
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message || error.message)
+          console.log(error)
+        }
+      },
+    })
 
-  return (
+  return !(updateLoading || deleteLoading) ? (
     <div className='card w-96 bg-neutral shadow-xl'>
       <div className='card-body'>
         <div className='flex justify-between'>
           <h2 className='card-title'>{title}</h2>
           <button
             className='btn btn-sm btn-circle btn-outline btn-error'
-            onClick={handleDelete}
+            onClick={() => handleDelete()}
           >
             <PiTrash />
           </button>
@@ -76,11 +101,15 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
               type='checkbox'
               className='ml-2 checkbox checkbox-success'
               checked={completed}
-              onChange={handleCompleted}
+              onChange={() => handleCompleted()}
             />
           </label>
         </div>
       </div>
+    </div>
+  ) : (
+    <div>
+      <Loading />
     </div>
   )
 }

@@ -1,34 +1,50 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TodoList from '../components/TodoList'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { setTodos } from '../redux/todosSlice'
 import Loading from '../components/Loading'
 import AddForm from '../components/AddForm'
+import { useQuery } from 'react-query'
+import axios, { AxiosError } from 'axios'
+import { TodoInterface } from '../interfaces/interfaces'
+import { toast } from 'react-toastify'
 
 const Todos = () => {
   const todos = useSelector((state: RootState) => state.todos.todos)
+  const { token } = useSelector((state: RootState) => state.auth.user)
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
 
-  // TODO: remake to useQuery
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const response = await fetch('http://localhost:8080/api/todos')
-      if (response.ok) {
-        const data = await response.json()
-        dispatch(setTodos(data))
+  const { isLoading } = useQuery({
+    queryKey: 'todos',
+    queryFn: async () => {
+      const { data } = await axios.get(
+        'http://localhost:8080/api/todos',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      return data as TodoInterface[]
+    },
+    onSuccess: (data) => {
+      dispatch(setTodos(data))
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || error.message)
+        console.log(error)
       }
-    }
-
-    todos.length === 0 && fetchTodos()
-  }, [dispatch, todos])
+    },
+  })
 
   const handleAddTodo = () => {
     setIsOpen((prev) => !prev)
   }
 
-  return todos.length > 0 ? (
+  return !isLoading && todos ? (
     <div className='flex flex-col justify-center items-center w-full h-full p-10 '>
       <div className='text-3xl text-primary mb-10'>Todo List</div>
 

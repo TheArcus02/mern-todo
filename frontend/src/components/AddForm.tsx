@@ -52,7 +52,7 @@ const AddForm: React.FC<AddFormProps> = ({ handleClose }) => {
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.message)
+        toast.error(error.response?.data.message || error.message)
         console.log(error)
       }
     },
