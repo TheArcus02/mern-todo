@@ -2,9 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { UserInterface } from '../interfaces/interfaces'
 
+const initialUserState =
+  (JSON.parse(localStorage.getItem('user')!) as UserInterface) ||
+  ({} as UserInterface)
+
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: { user: {} as UserInterface },
+  initialState: {
+    user: initialUserState,
+  },
   reducers: {
     login: (state, action: PayloadAction<UserInterface>) => {
       state.user = action.payload

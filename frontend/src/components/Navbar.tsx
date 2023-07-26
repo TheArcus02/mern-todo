@@ -1,6 +1,20 @@
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { logout } from '../redux/authSlice'
+import { RootState } from '../redux/store'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
+  const dispatch = useDispatch()
+
+  const { token } = useSelector((state: RootState) => state.auth.user)
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    dispatch(logout())
+    toast.success('Logout successful 🔒')
+  }
+
   return (
     <div className='navbar bg-neutral'>
       <div className='navbar-start'>
@@ -42,9 +56,15 @@ const Navbar = () => {
         </ul>
       </div>
       <div className='navbar-end'>
-        <Link to='/login' className='btn'>
-          Login
-        </Link>
+        {token ? (
+          <button className='btn btn-ghost' onClick={handleLogout}>
+            Logout
+          </button>
+        ) : (
+          <Link to='/login' className='btn'>
+            Login
+          </Link>
+        )}
       </div>
     </div>
   )

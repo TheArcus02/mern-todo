@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { UserInterface } from '../interfaces/interfaces'
@@ -20,6 +20,7 @@ type LoginValidatorType = z.infer<typeof LoginValidator>
 
 const LoginForm = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     register,
@@ -38,8 +39,10 @@ const LoginForm = () => {
       return data as UserInterface
     },
     onSuccess: (data) => {
+      localStorage.setItem('user', JSON.stringify(data))
       dispatch(login(data))
       toast.success('Login successful 🎉')
+      navigate('/')
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { UserInterface } from '../interfaces/interfaces'
 import { login } from '../redux/authSlice'
@@ -20,6 +20,7 @@ type SignupValidatorType = z.infer<typeof SignupValidator>
 
 const SignupForm = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {
     register,
@@ -38,8 +39,10 @@ const SignupForm = () => {
       return data as UserInterface
     },
     onSuccess: (data) => {
+      localStorage.setItem('token', data.token)
       dispatch(login(data))
       toast.success('Signup successful 🎉')
+      navigate('/')
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

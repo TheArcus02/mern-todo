@@ -11,6 +11,7 @@ const Todos = () => {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
 
+  // TODO: remake to useQuery
   useEffect(() => {
     const fetchTodos = async () => {
       const response = await fetch('http://localhost:8080/api/todos')

@@ -7,6 +7,7 @@ export const store = configureStore({
     todos: todosSlice,
     auth: authSlice,
   },
+  devTools: true,
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
