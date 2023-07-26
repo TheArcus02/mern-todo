@@ -6,8 +6,10 @@ import {
   getTodos,
   updateTodo,
 } from '../controllers/todoController'
+import requireAuth from '../middleware/requireAuth'
 
 const router = Router()
+router.use(requireAuth)
 
 router.get('/', getTodos)
 router.get('/:id', getTodo)
