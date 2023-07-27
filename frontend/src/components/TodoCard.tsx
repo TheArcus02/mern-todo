@@ -76,7 +76,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
     })
 
   return (
-    <div className='card w-96 bg-neutral shadow-xl'>
+    <div className='card w-72 sm:w-96 bg-neutral shadow-xl'>
       <div className='card-body'>
         <div className='flex justify-between'>
           <h2 className='card-title'>{title}</h2>

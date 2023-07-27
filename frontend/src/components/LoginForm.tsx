@@ -61,7 +61,7 @@ const LoginForm = () => {
   return !isLoading ? (
     <form onSubmit={handleSubmit((data) => loginHandler(data))}>
       <h1 className='text-3xl font-bold mb-5 text-center '>Login</h1>
-      <div className='flex flex-col w-96'>
+      <div className='flex flex-col sm:w-96 '>
         <label className='label'>
           <span className='label-text'>Email</span>
         </label>

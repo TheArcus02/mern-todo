@@ -62,9 +62,15 @@ const Navbar = () => {
       </div>
       <div className='navbar-end'>
         {user?.token ? (
-          <button className='btn btn-ghost' onClick={handleLogout}>
-            Logout
-          </button>
+          <>
+            <div>{user.email}</div>
+            <button
+              className='btn btn-ghost ml-2'
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </>
         ) : (
           <Link to='/login' className='btn'>
             Login

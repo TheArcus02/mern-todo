@@ -5,7 +5,11 @@ import mongoose from 'mongoose'
 
 const getTodos = async (req: express.Request, res: express.Response) => {
   try {
-    const todos = await Todo.find().sort({ createdAt: -1 })
+    const todos = await Todo.find()
+      .where({
+        user_id: req.user?._id,
+      })
+      .sort({ createdAt: -1 })
     return res.status(200).json(todos)
   } catch (error) {
     return res.status(400).json({ error: error.message })
@@ -34,11 +38,13 @@ const getTodo = async (req: express.Request, res: express.Response) => {
 
 const createTodo = async (req: express.Request, res: express.Response) => {
   try {
+    const user_id = req.user?._id
     const { title, description, completed } = req.body as TodoInterface
     const todo = await Todo.create({
       title,
       description,
       completed,
+      user_id,
     })
     res.status(200).json(todo)
   } catch (error) {

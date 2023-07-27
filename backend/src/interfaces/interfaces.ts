@@ -2,6 +2,7 @@ export interface TodoInterface {
   title: string
   description: string
   completed?: boolean
+  user_id: string
 }
 
 export interface UserInterface {

@@ -56,6 +56,7 @@ const AddForm: React.FC<AddFormProps> = ({ handleClose }) => {
     onSuccess: (data) => {
       dispatch(addTodo({ ...data }))
       toast.success('Todo added successfully 🎉')
+      handleClose()
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

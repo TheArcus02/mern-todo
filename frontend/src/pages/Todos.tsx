@@ -46,9 +46,31 @@ const Todos = () => {
 
   return !isLoading && todos ? (
     <div className='flex flex-col justify-center items-center w-full h-full p-10 '>
-      <div className='text-3xl text-primary mb-10'>Todo List</div>
+      {todos.length > 0 ? (
+        <>
+          <div className='text-3xl text-primary mb-10'>Todo List</div>
 
-      <TodoList todos={todos} />
+          <TodoList todos={todos} />
+        </>
+      ) : (
+        <div className='alert max-w-md alert-info'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            className='stroke-current shrink-0 w-6 h-6'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+            ></path>
+          </svg>
+          No todos yet. Add one to get started!
+        </div>
+      )}
+
       <div className='w-full flex justify-center mt-10'>
         {!isOpen ? (
           <button
