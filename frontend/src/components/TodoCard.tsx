@@ -21,7 +21,9 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
       mutationKey: 'updateTodo',
       mutationFn: async () => {
         const { data } = await axios.patch(
-          `http://localhost:8080/api/todos/${todo._id}`,
+          `${import.meta.env.VITE_API_URL || ''}/api/todos/${
+            todo._id
+          }`,
           {
             completed: !completed,
           },
@@ -54,7 +56,9 @@ const TodoCard: React.FC<TodoCardProps> = ({ todo }) => {
       mutationKey: 'deleteTodo',
       mutationFn: async () => {
         const { data } = await axios.delete(
-          `http://localhost:8080/api/todos/${todo._id}`,
+          `${import.meta.env.VITE_API_URL || ''}/api/todos/${
+            todo._id
+          }`,
           {
             headers: {
               Authorization: `Bearer ${user?.token}`,

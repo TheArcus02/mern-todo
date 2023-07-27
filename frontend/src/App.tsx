@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Todos from './pages/Todos'
 import { ToastContainer } from 'react-toastify'
@@ -12,12 +12,13 @@ export default function App() {
     <>
       <Navbar />
       <Routes>
+        <Route path='/' element={<Navigate to='/todos' />} />
         <Route element={<RequireAuth />}>
           <Route path='/todos' element={<Todos />} />
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route path='*' element={<h1>404 Not Found</h1>} />
       </Routes>
       <ToastContainer
         position='bottom-left'

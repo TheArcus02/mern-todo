@@ -33,7 +33,7 @@ const LoginForm = () => {
   const { mutate: loginHandler, isLoading } = useMutation({
     mutationFn: async ({ email, password }: LoginValidatorType) => {
       const { data } = await axios.post(
-        'http://localhost:8080/api/user/login',
+        `${import.meta.env.VITE_API_URL || ''}/api/user/login`,
         { email, password },
       )
       return data as UserInterface

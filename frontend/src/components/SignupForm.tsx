@@ -33,7 +33,7 @@ const SignupForm = () => {
   const { mutate: signupHandler, isLoading } = useMutation({
     mutationFn: async ({ email, password }: SignupValidatorType) => {
       const { data } = await axios.post(
-        'http://localhost:8080/api/user/signup',
+        `${import.meta.env.VITE_API_URL || ''}/api/user/signup`,
         { email, password },
       )
       return data as UserInterface

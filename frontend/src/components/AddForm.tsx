@@ -43,7 +43,7 @@ const AddForm: React.FC<AddFormProps> = ({ handleClose }) => {
   const { mutate: addTodoHandler, isLoading } = useMutation({
     mutationFn: async ({ title, description }: TodoValidatorType) => {
       const { data } = await axios.post(
-        'http://localhost:8080/api/todos',
+        `${import.meta.env.VITE_API_URL || ''}/api/todos`,
         { title, description },
         {
           headers: {

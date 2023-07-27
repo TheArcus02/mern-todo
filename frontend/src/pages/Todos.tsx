@@ -20,7 +20,7 @@ const Todos = () => {
     queryKey: 'todos',
     queryFn: async () => {
       const { data } = await axios.get(
-        'http://localhost:8080/api/todos',
+        `${import.meta.env.VITE_API_URL || ''}/api/todos`,
         {
           headers: {
             Authorization: `Bearer ${user?.token}`,
